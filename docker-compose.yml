@@ -1,0 +1,75 @@
+# Whole stack on one machine:  docker compose up -d --build
+# Dashboard on :8000. The mock market (OTAs, PMS, channel manager) is on :8500.
+x-app: &app
+  build: .
+  image: occupancy-rms
+  restart: unless-stopped
+  env_file: .env
+  environment:
+    MYSQL_URL: mysql+pymysql://occ:${MYSQL_PASSWORD:-occ}@mysql:3306/occupancy
+    MONGO_URL: mongodb://mongo:27017/occupancy
+    REDIS_URL: redis://redis:6379/0
+    MARKET_URL: http://market:8500
+    MODELS_URL: http://models:8600
+  depends_on:
+    mysql: { condition: service_healthy }
+    mongo: { condition: service_started }
+    redis: { condition: service_started }
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: occupancy
+      MYSQL_USER: occ
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-occ}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change-me}
+    volumes: [mysql:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 5s
+      retries: 20
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes: [mongo:/data/db]
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: [redis:/data]
+
+  market:
+    <<: *app
+    command: ["python", "-m", "occupancy.ota.app"]
+    environment:
+      MARKET_WARMUP_DAYS: "120"
+    depends_on: []
+    ports: ["127.0.0.1:8500:8500"]
+
+  models:
+    <<: *app
+    command: ["uvicorn", "occupancy.api.models:app", "--host", "0.0.0.0", "--port", "8600"]
+    depends_on: []
+
+  normalizer:
+    <<: *app
+    command: ["python", "-m", "occupancy.pipeline.normalize"]
+
+  cycle:
+    <<: *app
+    # Every 15 minutes: crawl, ingest, checks, recommendations, pushes.
+    # Add --advance to move the simulated market one day per cycle.
+    command: ["python", "-m", "occupancy.cycle", "--every", "900"]
+
+  api:
+    <<: *app
+    ports: ["127.0.0.1:8000:8000"]
+
+volumes:
+  mysql:
+  mongo:
+  redis:

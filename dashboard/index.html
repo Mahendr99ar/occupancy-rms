@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Occupancy: rate desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<header class="masthead">
+  <div>
+    <h1 id="hotel">Occupancy</h1>
+    <p class="sub" id="asof">Loading the latest business day</p>
+  </div>
+  <div class="masthead-actions">
+    <button class="health" id="health-pill" type="button" aria-controls="feeds">Checking data</button>
+    <a class="btn ghost" href="/api/reports/weekly.xlsx">Excel report</a>
+    <a class="btn ghost" href="/api/reports/weekly.pptx">Slide deck</a>
+  </div>
+</header>
+
+<main>
+  <section class="kpis" id="kpis" aria-label="Key figures"></section>
+
+  <section class="desk">
+    <div class="calendar-wrap">
+      <div class="section-head">
+        <h2>Next 30 nights</h2>
+        <p class="legend"><span class="key otb"></span>Rooms on the books <span class="key fc"></span>Forecast
+          <span class="key comp"></span>Competitor range <span class="key rate"></span>Our rate <span class="key wait"></span>Waiting for approval</p>
+      </div>
+      <div class="calendar" id="calendar" role="listbox" aria-label="Stay dates"></div>
+    </div>
+
+    <aside class="detail" id="detail" aria-live="polite">
+      <p class="empty">Pick a night to see why the engine wants to move its rate.</p>
+    </aside>
+  </section>
+
+  <section class="grid">
+    <div class="panel">
+      <div class="section-head"><h2>Waiting for you</h2><p class="hint" id="queue-count"></p></div>
+      <table class="table" id="queue"><thead><tr><th>Night</th><th class="num">Now</th><th class="num">Suggested</th><th class="num">Change</th><th></th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="panel" id="feeds">
+      <div class="section-head"><h2>Data feeds</h2><p class="hint">Latest run of the checks</p></div>
+      <table class="table" id="checks"><thead><tr><th>Feed</th><th>Check</th><th>Result</th><th>Detail</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="panel">
+      <div class="section-head"><h2>Corporate rate requests</h2><p class="hint">Read from the inbox by the regex parser, or by the small model when the regex cannot</p></div>
+      <table class="table" id="requests"><thead><tr><th>Company</th><th>Stay</th><th class="num">Rate</th><th>Rooms</th><th>Read by</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="panel">
+      <div class="section-head"><h2>Arrivals likely to cancel</h2><p class="hint" id="risk-sum"></p></div>
+      <table class="table" id="risk"><thead><tr><th>Booking</th><th>Arrival</th><th>Channel</th><th class="num">Chance</th></tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+</main>
+
+<dialog id="token-dialog">
+  <form method="dialog">
+    <h3>Approve rate changes</h3>
+    <p>Rate changes go straight to the channel manager, so they need the API token.</p>
+    <label>API token <input id="token-input" type="password" autocomplete="off" required></label>
+    <menu><button value="cancel" class="btn ghost">Cancel</button><button value="ok" class="btn">Save token</button></menu>
+  </form>
+</dialog>
+<script src="/static/app.js"></script>
+</body>
+</html>

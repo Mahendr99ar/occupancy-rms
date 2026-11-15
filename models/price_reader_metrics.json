@@ -1,0 +1,10 @@
+{
+  "knn": {
+    "training_fonts": 0.978,
+    "held_out_font": 0.982
+  },
+  "svm": {
+    "training_fonts": 0.99,
+    "held_out_font": 0.99
+  }
+}

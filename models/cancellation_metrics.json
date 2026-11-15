@@ -1,0 +1,28 @@
+{
+  "majority": {
+    "accuracy": 0.613,
+    "roc_auc": null
+  },
+  "logistic": {
+    "accuracy": 0.674,
+    "roc_auc": 0.721
+  },
+  "decision_tree": {
+    "accuracy": 0.705,
+    "roc_auc": 0.747
+  },
+  "linear_svm": {
+    "accuracy": 0.671,
+    "roc_auc": 0.72
+  },
+  "gradient_boosting": {
+    "accuracy": 0.699,
+    "roc_auc": 0.757
+  },
+  "_split": {
+    "train_rows": 78703,
+    "test_rows": 40687,
+    "test_cancel_rate": 0.387
+  },
+  "_saved": "gradient_boosting"
+}

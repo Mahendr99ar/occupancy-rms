@@ -1,0 +1,145 @@
+/* The rate desk. Ink and brass: the colours of a hotel front desk ledger,
+   used sparingly so the numbers carry the page. */
+:root {
+  --paper: #f3f5f6;
+  --card: #ffffff;
+  --ink: #1f3a4d;
+  --ink-2: #4b6170;
+  --muted: #7d8f9b;
+  --rule: #dfe5e9;
+  --brass: #c27c2c;
+  --brass-soft: #f3e2cc;
+  --sea: #2e7d6b;
+  --sea-soft: #d6ece6;
+  --amber: #b7791f;
+  --amber-soft: #fbefd5;
+  --red: #b4443b;
+  --red-soft: #f6dcd9;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.5 "IBM Plex Sans", system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+h1, h2, h3 { font-family: "IBM Plex Serif", Georgia, serif; font-weight: 600; margin: 0; }
+h1 { font-size: 26px; letter-spacing: -0.01em; }
+h2 { font-size: 18px; }
+.sub, .hint { color: var(--muted); margin: 2px 0 0; font-size: 13px; }
+
+.masthead {
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;
+  padding: 22px 32px 18px; background: var(--card); border-bottom: 1px solid var(--rule);
+}
+.masthead-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.btn {
+  display: inline-block; border: 1px solid var(--ink); background: var(--ink); color: #fff;
+  padding: 7px 14px; border-radius: var(--radius); font: 500 14px "IBM Plex Sans", sans-serif;
+  text-decoration: none; cursor: pointer;
+}
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
+.btn.brass { background: var(--brass); border-color: var(--brass); }
+.btn:hover { filter: brightness(1.08); }
+.btn:focus-visible, .day:focus-visible, .health:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+.btn[disabled] { opacity: .5; cursor: progress; }
+
+.health {
+  border: 1px solid var(--rule); background: var(--sea-soft); color: var(--sea);
+  border-radius: 999px; padding: 6px 12px; font: 500 13px "IBM Plex Sans", sans-serif; cursor: pointer;
+}
+.health.warn { background: var(--amber-soft); color: var(--amber); }
+.health.fail { background: var(--red-soft); color: var(--red); }
+
+main { padding: 24px 32px 48px; max-width: 1480px; margin: 0 auto; }
+
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+.kpi { background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; }
+.kpi .value { font: 600 28px/1.15 "IBM Plex Serif", serif; }
+.kpi .label { color: var(--ink-2); font-size: 13px; }
+.kpi .note { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+.desk { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
+.calendar-wrap, .detail, .panel {
+  background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px;
+}
+.section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+.legend { color: var(--muted); font-size: 12px; margin: 0; }
+.key { display: inline-block; width: 10px; height: 10px; margin: 0 4px 0 12px; vertical-align: -1px; border-radius: 2px; }
+.key.otb { background: var(--ink); }
+.key.fc { background: var(--sea-soft); border: 1px dashed var(--sea); }
+.key.comp { background: var(--brass-soft); }
+.key.rate { background: var(--brass); height: 3px; vertical-align: 2px; }
+.key.wait { background: var(--brass); width: 7px; height: 7px; border-radius: 50%; }
+
+/* One column per night: occupancy bar below, rate against the competitor
+   range above. Height is the scale, so nights compare at a glance. */
+.calendar { display: grid; grid-template-columns: repeat(30, minmax(26px, 1fr)); gap: 3px; overflow-x: auto; }
+.day {
+  display: grid; grid-template-rows: 18px 120px 100px 34px; border: 1px solid transparent;
+  border-radius: 4px; padding: 2px 1px; cursor: pointer; background: none; font: inherit; color: inherit;
+}
+.day:hover { background: var(--paper); }
+.day[aria-selected="true"] { border-color: var(--brass); background: #fffaf3; }
+.day .mark { height: 18px; text-align: center; }
+.day .mark i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--brass); }
+.price { position: relative; }
+.price .band { position: absolute; left: 22%; right: 22%; background: var(--brass-soft); border-radius: 2px; }
+.price .now, .price .rec { position: absolute; left: 10%; right: 10%; height: 3px; border-radius: 2px; }
+.price .now { background: var(--ink-2); }
+.price .rec { background: var(--brass); }
+.occ { position: relative; border-top: 1px solid var(--rule); }
+.occ .fc { position: absolute; bottom: 0; left: 18%; right: 18%; background: var(--sea-soft); border: 1px dashed var(--sea); border-bottom: 0; }
+.occ .otb { position: absolute; bottom: 0; left: 18%; right: 18%; background: var(--ink); }
+.day .label { font-size: 11px; text-align: center; color: var(--ink-2); line-height: 1.2; padding-top: 4px; }
+.day.weekend .label { color: var(--brass); }
+
+.detail .empty { color: var(--muted); }
+.detail h3 { font-size: 20px; }
+.detail .event { display: inline-block; margin-top: 6px; background: var(--brass-soft); color: #7a4d19; border-radius: 4px; padding: 2px 8px; font-size: 13px; }
+.rates { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 14px 0; }
+.rates div { border: 1px solid var(--rule); border-radius: var(--radius); padding: 8px 10px; }
+.rates .v { font: 600 22px "IBM Plex Serif", serif; }
+.rates .k { color: var(--muted); font-size: 12px; }
+.rates .up .v { color: var(--sea); }
+.rates .down .v { color: var(--red); }
+.why { background: var(--paper); border-radius: var(--radius); padding: 10px 12px; margin: 10px 0; }
+.facts { list-style: none; padding: 0; margin: 0 0 12px; font-size: 13px; color: var(--ink-2); }
+.facts li { padding: 3px 0; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; }
+.actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.actions input { width: 100px; padding: 6px 8px; border: 1px solid var(--rule); border-radius: var(--radius); font: inherit; }
+.status { font-size: 13px; color: var(--muted); }
+
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table th { text-align: left; color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--rule); padding: 6px 6px 6px 0; }
+.table td { border-bottom: 1px solid var(--rule); padding: 7px 6px 7px 0; vertical-align: top; }
+.table .num { text-align: right; }
+.table tr.clickable { cursor: pointer; }
+.table tr.clickable:hover td { background: var(--paper); }
+.tag { display: inline-block; border-radius: 4px; padding: 1px 7px; font-size: 12px; }
+.tag.pass { background: var(--sea-soft); color: var(--sea); }
+.tag.warn { background: var(--amber-soft); color: var(--amber); }
+.tag.fail { background: var(--red-soft); color: var(--red); }
+.up { color: var(--sea); }
+.down { color: var(--red); }
+.detail-text { color: var(--ink-2); max-width: 420px; }
+
+dialog { border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; max-width: 380px; }
+dialog label { display: block; margin: 12px 0; }
+dialog input { width: 100%; padding: 7px; border: 1px solid var(--rule); border-radius: var(--radius); margin-top: 4px; }
+dialog menu { display: flex; justify-content: flex-end; gap: 8px; padding: 0; margin: 0; }
+
+@media (max-width: 1100px) {
+  .desk, .grid { grid-template-columns: 1fr; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  main, .masthead { padding-left: 16px; padding-right: 16px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .day { transition: background .12s; }
+}
+.nowrap { white-space: nowrap; }
